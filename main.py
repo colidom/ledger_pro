@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from database import UserDatabase
-import webbrowser
 
 
 class App:
@@ -13,8 +12,6 @@ class App:
 
         # Inicializar la base de datos
         self.db = UserDatabase("users.db")
-
-        self.create_widgets()
 
         self.create_widgets()
 
@@ -55,10 +52,52 @@ class App:
         github_button.pack(pady=20)
 
     def open_github(self):
+        import webbrowser
+
         webbrowser.open_new("https://github.com/colidom/ledger_pro")
 
     def open_users(self):
-        messagebox.showinfo("Usuarios", "Aquí se abrirá la gestión de usuarios.")
+        self.create_user_window()
+
+    def create_user_window(self):
+        user_window = tk.Toplevel(self.root)
+        user_window.title("Registro de Usuario")
+        user_window.geometry("300x200")
+
+        tk.Label(user_window, text="Número de Vivienda:").pack(pady=5)
+        house_number_entry = tk.Entry(user_window)
+        house_number_entry.pack(pady=5)
+
+        tk.Label(user_window, text="Nombre:").pack(pady=5)
+        name_entry = tk.Entry(user_window)
+        name_entry.pack(pady=5)
+
+        tk.Label(user_window, text="Apellidos:").pack(pady=5)
+        lastname_entry = tk.Entry(user_window)
+        lastname_entry.pack(pady=5)
+
+        tk.Label(user_window, text="Campo Adicional:").pack(pady=5)
+        additional_field_entry = tk.Entry(user_window)
+        additional_field_entry.pack(pady=5)
+
+        tk.Button(
+            user_window,
+            text="Guardar",
+            command=lambda: self.save_user(
+                house_number_entry.get(),
+                name_entry.get(),
+                lastname_entry.get(),
+                additional_field_entry.get(),
+                user_window,
+            ),
+        ).pack(pady=10)
+
+    def save_user(self, house_number, name, lastname, additional_field, window):
+        self.db.insert_user(house_number, name, lastname, additional_field)
+        messagebox.showinfo(
+            "Usuario Guardado", "El usuario ha sido registrado correctamente."
+        )
+        window.destroy()
 
     def open_income(self):
         messagebox.showinfo("Ingresos", "Aquí se abrirá el registro de ingresos.")
