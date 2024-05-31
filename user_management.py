@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from database import UserDatabase
+from export_to_excel import export_to_excel
 
 
 class UserManagement:
@@ -20,7 +21,7 @@ class UserManagement:
         top_button_frame = tk.Frame(user_list_window)
         top_button_frame.pack(pady=10)
 
-        # Botones para registrar, editar y eliminar usuarios
+        # Botones para registrar, editar, eliminar y exportar usuarios
         self.edit_button = tk.Button(
             top_button_frame,
             text="Editar usuario",
@@ -45,6 +46,17 @@ class UserManagement:
             width=15,
             command=self.open_create_user,
         ).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(
+            top_button_frame,
+            text="Exportar a excel",
+            width=15,
+            command=lambda: export_to_excel(
+                users
+            ),  # Llama a la función export_to_excel con los datos
+        ).pack(side=tk.LEFT, padx=5)
+
+        self.delete_button.pack(side=tk.LEFT, padx=5)
 
         self.tree = ttk.Treeview(
             user_list_window,
