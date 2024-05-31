@@ -14,16 +14,16 @@ class UserDatabase:
                                 house_number INTEGER,
                                 owner_name TEXT,
                                 owner_lastname TEXT,
-                                additional_field TEXT
+                                phone TEXT
                                 )"""
         )
         self.conn.commit()
 
-    def insert_user(self, house_number, owner_name, owner_lastname, additional_field):
+    def insert_user(self, house_number, owner_name, owner_lastname, phone):
         self.cursor.execute(
-            """INSERT INTO users (house_number, owner_name, owner_lastname, additional_field)
+            """INSERT INTO users (house_number, owner_name, owner_lastname, phone)
                                 VALUES (?, ?, ?, ?)""",
-            (house_number, owner_name, owner_lastname, additional_field),
+            (house_number, owner_name, owner_lastname, phone),
         )
         self.conn.commit()
 
@@ -31,13 +31,11 @@ class UserDatabase:
         self.cursor.execute("""SELECT * FROM users""")
         return self.cursor.fetchall()
 
-    def update_user(
-        self, user_id, house_number, owner_name, owner_lastname, additional_field
-    ):
+    def update_user(self, user_id, house_number, owner_name, owner_lastname, phone):
         self.cursor.execute(
-            """UPDATE users SET house_number=?, owner_name=?, owner_lastname=?, additional_field=?
+            """UPDATE users SET house_number=?, owner_name=?, owner_lastname=?, phone=?
                WHERE id=?""",
-            (house_number, owner_name, owner_lastname, additional_field, user_id),
+            (house_number, owner_name, owner_lastname, phone, user_id),
         )
         self.conn.commit()
 

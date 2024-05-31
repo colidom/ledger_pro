@@ -12,79 +12,70 @@ class UserManagement:
 
     def open_view_users(self):
         users = self.db.get_all_users()
-        if users:
-            user_list_window = tk.Toplevel()
-            user_list_window.title("Lista de Usuarios")
-            user_list_window.geometry("700x300")
+        user_list_window = tk.Toplevel()
+        user_list_window.title("Lista de Usuarios")
+        user_list_window.geometry("700x300")
 
-            # Frame para los botones de arriba
-            top_button_frame = tk.Frame(user_list_window)
-            top_button_frame.pack(pady=10)
+        # Frame para los botones de arriba
+        top_button_frame = tk.Frame(user_list_window)
+        top_button_frame.pack(pady=10)
 
-            # Botones para registrar, editar y eliminar usuarios
-            self.edit_button = tk.Button(
-                top_button_frame,
-                text="Editar usuario",
-                width=15,
-                command=self.edit_user,
-                state=tk.DISABLED,  # Inicialmente deshabilitado
-            )
-            self.edit_button.pack(side=tk.LEFT, padx=5)
+        # Botones para registrar, editar y eliminar usuarios
+        self.edit_button = tk.Button(
+            top_button_frame,
+            text="Editar usuario",
+            width=15,
+            command=self.edit_user,
+            state=tk.DISABLED,  # Inicialmente deshabilitado
+        )
+        self.edit_button.pack(side=tk.LEFT, padx=5)
 
-            self.delete_button = tk.Button(
-                top_button_frame,
-                text="Eliminar usuario",
-                width=15,
-                command=self.delete_user,
-                state=tk.DISABLED,  # Inicialmente deshabilitado
-            )
-            self.delete_button.pack(side=tk.LEFT, padx=5)
+        self.delete_button = tk.Button(
+            top_button_frame,
+            text="Eliminar usuario",
+            width=15,
+            command=self.delete_user,
+            state=tk.DISABLED,  # Inicialmente deshabilitado
+        )
+        self.delete_button.pack(side=tk.LEFT, padx=5)
 
-            tk.Button(
-                top_button_frame,
-                text="Registrar usuario",
-                width=15,
-                command=self.open_create_user,
-            ).pack(side=tk.LEFT, padx=5)
+        tk.Button(
+            top_button_frame,
+            text="Registrar usuario",
+            width=15,
+            command=self.open_create_user,
+        ).pack(side=tk.LEFT, padx=5)
 
-            self.tree = ttk.Treeview(
-                user_list_window,
-                columns=(
-                    "Id",
-                    "Vivienda",
-                    "Nombre",
-                    "Apellidos",
-                    "Campo Adicional",
-                ),
-                show="headings",
-            )
-            self.tree.heading("Id", text="Id")
-            self.tree.heading("Vivienda", text="Vivienda")
-            self.tree.heading("Nombre", text="Nombre")
-            self.tree.heading("Apellidos", text="Apellidos")
-            self.tree.heading("Campo Adicional", text="Campo Adicional")
+        self.tree = ttk.Treeview(
+            user_list_window,
+            columns=(
+                "Id",
+                "Vivienda",
+                "Nombre",
+                "Apellidos",
+                "Teléfono",
+            ),
+            show="headings",
+        )
+        self.tree.heading("Id", text="Id")
+        self.tree.heading("Vivienda", text="Vivienda")
+        self.tree.heading("Nombre", text="Nombre")
+        self.tree.heading("Apellidos", text="Apellidos")
+        self.tree.heading("Teléfono", text="Teléfono")
 
-            # Ajustar el ancho de las columnas automáticamente al contenido
-            self.tree.column("Id", width=50)  # Anchura de la columna "Id"
-            self.tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
-            self.tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
-            self.tree.column(
-                "Apellidos", width=150
-            )  # Anchura de la columna "Apellidos"
-            self.tree.column(
-                "Campo Adicional", width=200
-            )  # Anchura de la columna "Campo Adicional"
+        # Ajustar el ancho de las columnas automáticamente al contenido
+        self.tree.column("Id", width=50)  # Anchura de la columna "Id"
+        self.tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
+        self.tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
+        self.tree.column("Apellidos", width=150)  # Anchura de la columna "Apellidos"
+        self.tree.column("Teléfono", width=200)  # Anchura de la columna "Teléfono"
 
-            for user in users:
-                self.tree.insert("", tk.END, values=user)
-            self.tree.pack(fill="both", expand=True)
+        for user in users:
+            self.tree.insert("", tk.END, values=user)
+        self.tree.pack(fill="both", expand=True)
 
-            # Enlazar la función de selección del árbol
-            self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
-        else:
-            messagebox.showinfo(
-                "No hay Usuarios", "No hay usuarios registrados en la base de datos."
-            )
+        # Enlazar la función de selección del árbol
+        self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
 
     def create_user_window(self):
         user_window = tk.Toplevel()
@@ -103,7 +94,7 @@ class UserManagement:
         self.lastname_entry = tk.Entry(user_window)
         self.lastname_entry.pack(pady=5)
 
-        tk.Label(user_window, text="Campo Adicional:").pack(pady=5)
+        tk.Label(user_window, text="Teléfono:").pack(pady=5)
         self.additional_field_entry = tk.Entry(user_window)
         self.additional_field_entry.pack(pady=5)
 
@@ -121,6 +112,14 @@ class UserManagement:
 
         if house_number and name and lastname:
             self.db.insert_user(house_number, name, lastname, additional_field)
+            # Obtener el ID del usuario recién insertado
+            user_id = self.db.cursor.lastrowid
+            # Insertar la nueva fila en el Treeview
+            self.tree.insert(
+                "",
+                tk.END,
+                values=(user_id, house_number, name, lastname, additional_field),
+            )
             messagebox.showinfo(
                 "Usuario Guardado", "El usuario ha sido registrado correctamente."
             )
@@ -160,7 +159,7 @@ class UserManagement:
             lastname_entry.insert(0, lastname)
             lastname_entry.pack(pady=5)
 
-            tk.Label(edit_window, text="Campo Adicional:").pack(pady=5)
+            tk.Label(edit_window, text="Teléfono:").pack(pady=5)
             additional_field_entry = tk.Entry(edit_window)
             additional_field_entry.insert(0, additional_field)
             additional_field_entry.pack(pady=5)
@@ -186,6 +185,12 @@ class UserManagement:
     ):
         if house_number and name and lastname:
             self.db.update_user(user_id, house_number, name, lastname, additional_field)
+            # Actualizar la fila en el Treeview con los nuevos valores
+            selected_item = self.tree.selection()
+            self.tree.item(
+                selected_item,
+                values=(user_id, house_number, name, lastname, additional_field),
+            )
             messagebox.showinfo(
                 "Usuario Actualizado", "El usuario ha sido actualizado correctamente."
             )
