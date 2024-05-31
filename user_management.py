@@ -78,29 +78,29 @@ class UserManagement:
         self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
 
     def create_user_window(self):
-        user_window = tk.Toplevel()
-        user_window.title("Registro de Usuario")
-        user_window.geometry("300x300")
+        self.user_window = tk.Toplevel()
+        self.user_window.title("Registro de Usuario")
+        self.user_window.geometry("300x300")
 
-        tk.Label(user_window, text="Vivienda:").pack(pady=5)
-        self.house_number_entry = tk.Entry(user_window)
+        tk.Label(self.user_window, text="Vivienda:").pack(pady=5)
+        self.house_number_entry = tk.Entry(self.user_window)
         self.house_number_entry.pack(pady=5)
 
-        tk.Label(user_window, text="Nombre:").pack(pady=5)
-        self.name_entry = tk.Entry(user_window)
+        tk.Label(self.user_window, text="Nombre:").pack(pady=5)
+        self.name_entry = tk.Entry(self.user_window)
         self.name_entry.pack(pady=5)
 
-        tk.Label(user_window, text="Apellidos:").pack(pady=5)
-        self.lastname_entry = tk.Entry(user_window)
+        tk.Label(self.user_window, text="Apellidos:").pack(pady=5)
+        self.lastname_entry = tk.Entry(self.user_window)
         self.lastname_entry.pack(pady=5)
 
-        tk.Label(user_window, text="Teléfono:").pack(pady=5)
-        self.phone_entry = tk.Entry(user_window)
+        tk.Label(self.user_window, text="Teléfono:").pack(pady=5)
+        self.phone_entry = tk.Entry(self.user_window)
         self.phone_entry.pack(pady=5)
 
         tk.Button(
-            user_window,
-            text="Guardar",
+            self.user_window,
+            text="Registrar",
             command=self.save_user,
         ).pack(pady=10)
 
@@ -123,6 +123,8 @@ class UserManagement:
             messagebox.showinfo(
                 "Usuario Guardado", "El usuario ha sido registrado correctamente."
             )
+            # Cerrar la ventana de creación de usuario
+            self.user_window.destroy()
         else:
             messagebox.showerror(
                 "Error", "Por favor complete todos los campos obligatorios."
