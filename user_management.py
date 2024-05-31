@@ -20,7 +20,7 @@ class UserManagement:
                 user_list_window,
                 columns=(
                     "Id",
-                    "Número de Vivienda",
+                    "Vivienda",
                     "Nombre",
                     "Apellidos",
                     "Campo Adicional",
@@ -28,16 +28,14 @@ class UserManagement:
                 show="headings",
             )
             tree.heading("Id", text="Id")
-            tree.heading("Número de Vivienda", text="Número de Vivienda")
+            tree.heading("Vivienda", text="Vivienda")
             tree.heading("Nombre", text="Nombre")
             tree.heading("Apellidos", text="Apellidos")
             tree.heading("Campo Adicional", text="Campo Adicional")
 
             # Ajustar el ancho de las columnas automáticamente al contenido
             tree.column("Id", width=50)  # Anchura de la columna "Id"
-            tree.column(
-                "Número de Vivienda", width=100
-            )  # Anchura de la columna "Número de Vivienda"
+            tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
             tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
             tree.column("Apellidos", width=150)  # Anchura de la columna "Apellidos"
             tree.column(
@@ -55,9 +53,9 @@ class UserManagement:
     def create_user_window(self):
         user_window = tk.Toplevel()
         user_window.title("Registro de Usuario")
-        user_window.geometry("300x200")
+        user_window.geometry("300x300")
 
-        tk.Label(user_window, text="Número de Vivienda:").pack(pady=5)
+        tk.Label(user_window, text="Vivienda:").pack(pady=5)
         house_number_entry = tk.Entry(user_window)
         house_number_entry.pack(pady=5)
 
