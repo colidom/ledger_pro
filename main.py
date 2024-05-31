@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+from database import UserDatabase
 import webbrowser
 
 
@@ -9,6 +10,11 @@ class App:
         self.root = root
         self.root.title("LedgerPro - Gestión de Comunidad")
         self.root.geometry("400x400")
+
+        # Inicializar la base de datos
+        self.db = UserDatabase("users.db")
+
+        self.create_widgets()
 
         self.create_widgets()
 
