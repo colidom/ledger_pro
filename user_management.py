@@ -139,7 +139,7 @@ class UserManagement:
             house_number = values[1]
             name = values[2]
             lastname = values[3]
-            phone_entry = values[4]
+            phone = values[4]
 
             # Abrir la ventana de edición
             edit_window = tk.Toplevel()
@@ -162,9 +162,9 @@ class UserManagement:
             lastname_entry.pack(pady=5)
 
             tk.Label(edit_window, text="Teléfono:").pack(pady=5)
-            phone_entry = tk.Entry(edit_window)
-            phone_entry.insert(0, phone_entry)
-            phone_entry.pack(pady=5)
+            phone_entry_edit = tk.Entry(edit_window)
+            phone_entry_edit.insert(0, phone)
+            phone_entry_edit.pack(pady=5)
 
             # Botón para guardar los cambios
             tk.Button(
@@ -175,7 +175,7 @@ class UserManagement:
                     house_number_entry.get(),
                     name_entry.get(),
                     lastname_entry.get(),
-                    phone_entry.get(),
+                    phone_entry_edit.get(),
                     edit_window,
                 ),
             ).pack(pady=10)
