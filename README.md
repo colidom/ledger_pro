@@ -23,7 +23,7 @@ pip install tk
 1. Clona el repositorio:
 
 ```python
-git clone https://github.com/tuusuario/ledgerpro.git
+git clone https://github.com/colidom/ledger_pro
 ```
 
 2. Navega al directorio del proyecto:
