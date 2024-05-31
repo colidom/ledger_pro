@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from database import UserDatabase
+from tkinter import ttk  # Importamos ttk para usar ttk.Treeview
 
 
 class App:
@@ -21,7 +22,13 @@ class App:
 
         # Botones de navegación
         tk.Button(
-            self.root, text="Registro de Usuarios", width=25, command=self.open_users
+            self.root,
+            text="Registro de Usuarios",
+            width=25,
+            command=self.open_create_user,
+        ).pack(pady=5)
+        tk.Button(
+            self.root, text="Ver Usuarios", width=25, command=self.open_view_users
         ).pack(pady=5)
         tk.Button(
             self.root, text="Registro de Ingresos", width=25, command=self.open_income
@@ -56,8 +63,50 @@ class App:
 
         webbrowser.open_new("https://github.com/colidom/ledger_pro")
 
-    def open_users(self):
+    def open_create_user(self):
         self.create_user_window()
+
+    def open_view_users(self):
+        users = self.db.get_all_users()
+        if users:
+            user_list_window = tk.Toplevel(self.root)
+            user_list_window.title("Lista de Usuarios")
+            user_list_window.geometry("700x300")
+            tree = ttk.Treeview(
+                user_list_window,
+                columns=(
+                    "Id",
+                    "Número de Vivienda",
+                    "Nombre",
+                    "Apellidos",
+                    "Campo Adicional",
+                ),
+                show="headings",
+            )
+            tree.heading("Id", text="Id")
+            tree.heading("Número de Vivienda", text="Número de Vivienda")
+            tree.heading("Nombre", text="Nombre")
+            tree.heading("Apellidos", text="Apellidos")
+            tree.heading("Campo Adicional", text="Campo Adicional")
+
+            # Ajustar el ancho de las columnas automáticamente al contenido
+            tree.column("Id", width=50)  # Anchura de la columna "Id"
+            tree.column(
+                "Número de Vivienda", width=100
+            )  # Anchura de la columna "Número de Vivienda"
+            tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
+            tree.column("Apellidos", width=150)  # Anchura de la columna "Apellidos"
+            tree.column(
+                "Campo Adicional", width=200
+            )  # Anchura de la columna "Campo Adicional"
+
+            for user in users:
+                tree.insert("", tk.END, values=user)
+            tree.pack(fill="both", expand=True)
+        else:
+            messagebox.showinfo(
+                "No hay Usuarios", "No hay usuarios registrados en la base de datos."
+            )
 
     def create_user_window(self):
         user_window = tk.Toplevel(self.root)
