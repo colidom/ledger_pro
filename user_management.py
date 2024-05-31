@@ -16,6 +16,15 @@ class UserManagement:
             user_list_window = tk.Toplevel()
             user_list_window.title("Lista de Usuarios")
             user_list_window.geometry("700x300")
+
+            # Botón para registro de usuarios
+            tk.Button(
+                user_list_window,
+                text="Registrar usuario",
+                width=25,
+                command=self.open_create_user,
+            ).pack(pady=5)
+
             tree = ttk.Treeview(
                 user_list_window,
                 columns=(

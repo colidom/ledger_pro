@@ -19,16 +19,10 @@ class MainWindow:
         # Título
         tk.Label(self.root, text="LedgerPro", font=("Arial", 26)).pack(pady=25)
 
-        # Botones de navegación
+        # Botón para ver usuarios
         tk.Button(
             self.root,
-            text="Registro de Usuarios",
-            width=25,
-            command=self.user_management.open_create_user,
-        ).pack(pady=5)
-        tk.Button(
-            self.root,
-            text="Ver Usuarios",
+            text="Usuarios",
             width=25,
             command=self.user_management.open_view_users,
         ).pack(pady=5)
