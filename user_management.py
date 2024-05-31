@@ -22,6 +22,24 @@ class UserManagement:
             top_button_frame.pack(pady=10)
 
             # Botones para registrar, editar y eliminar usuarios
+            self.edit_button = tk.Button(
+                top_button_frame,
+                text="Editar usuario",
+                width=15,
+                command=self.edit_user,
+                state=tk.DISABLED,  # Inicialmente deshabilitado
+            )
+            self.edit_button.pack(side=tk.LEFT, padx=5)
+
+            self.delete_button = tk.Button(
+                top_button_frame,
+                text="Eliminar usuario",
+                width=15,
+                command=self.delete_user,
+                state=tk.DISABLED,  # Inicialmente deshabilitado
+            )
+            self.delete_button.pack(side=tk.LEFT, padx=5)
+
             tk.Button(
                 top_button_frame,
                 text="Registrar usuario",
@@ -29,21 +47,7 @@ class UserManagement:
                 command=self.open_create_user,
             ).pack(side=tk.LEFT, padx=5)
 
-            tk.Button(
-                top_button_frame,
-                text="Editar usuario",
-                width=15,
-                command=self.edit_user,
-            ).pack(side=tk.LEFT, padx=5)
-
-            tk.Button(
-                top_button_frame,
-                text="Eliminar usuario",
-                width=15,
-                command=self.delete_user,
-            ).pack(side=tk.LEFT, padx=5)
-
-            tree = ttk.Treeview(
+            self.tree = ttk.Treeview(
                 user_list_window,
                 columns=(
                     "Id",
@@ -54,24 +58,29 @@ class UserManagement:
                 ),
                 show="headings",
             )
-            tree.heading("Id", text="Id")
-            tree.heading("Vivienda", text="Vivienda")
-            tree.heading("Nombre", text="Nombre")
-            tree.heading("Apellidos", text="Apellidos")
-            tree.heading("Campo Adicional", text="Campo Adicional")
+            self.tree.heading("Id", text="Id")
+            self.tree.heading("Vivienda", text="Vivienda")
+            self.tree.heading("Nombre", text="Nombre")
+            self.tree.heading("Apellidos", text="Apellidos")
+            self.tree.heading("Campo Adicional", text="Campo Adicional")
 
             # Ajustar el ancho de las columnas automáticamente al contenido
-            tree.column("Id", width=50)  # Anchura de la columna "Id"
-            tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
-            tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
-            tree.column("Apellidos", width=150)  # Anchura de la columna "Apellidos"
-            tree.column(
+            self.tree.column("Id", width=50)  # Anchura de la columna "Id"
+            self.tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
+            self.tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
+            self.tree.column(
+                "Apellidos", width=150
+            )  # Anchura de la columna "Apellidos"
+            self.tree.column(
                 "Campo Adicional", width=200
             )  # Anchura de la columna "Campo Adicional"
 
             for user in users:
-                tree.insert("", tk.END, values=user)
-            tree.pack(fill="both", expand=True)
+                self.tree.insert("", tk.END, values=user)
+            self.tree.pack(fill="both", expand=True)
+
+            # Enlazar la función de selección del árbol
+            self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
         else:
             messagebox.showinfo(
                 "No hay Usuarios", "No hay usuarios registrados en la base de datos."
@@ -126,3 +135,20 @@ class UserManagement:
         messagebox.showinfo(
             "Eliminar Usuario", "¡El usuario ha sido eliminado correctamente!"
         )
+
+    def on_tree_select(self, event):
+        # Obtener el índice del elemento seleccionado
+        selected_item = self.tree.selection()
+        # Habilitar/deshabilitar los botones según si hay un usuario seleccionado
+        if selected_item:
+            self.edit_button.config(state=tk.NORMAL)
+            self.delete_button.config(state=tk.NORMAL)
+        else:
+            self.edit_button.config(state=tk.DISABLED)
+            self.delete_button.config(state=tk.DISABLED)
+
+
+# Prueba del código
+if __name__ == "__main__":
+    user_management = UserManagement()
+    user_management.open_view_users()
