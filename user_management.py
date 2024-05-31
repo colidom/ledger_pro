@@ -17,13 +17,31 @@ class UserManagement:
             user_list_window.title("Lista de Usuarios")
             user_list_window.geometry("700x300")
 
-            # Botón para registro de usuarios
+            # Frame para los botones de arriba
+            top_button_frame = tk.Frame(user_list_window)
+            top_button_frame.pack(pady=10)
+
+            # Botones para registrar, editar y eliminar usuarios
             tk.Button(
-                user_list_window,
+                top_button_frame,
                 text="Registrar usuario",
-                width=25,
+                width=15,
                 command=self.open_create_user,
-            ).pack(pady=5)
+            ).pack(side=tk.LEFT, padx=5)
+
+            tk.Button(
+                top_button_frame,
+                text="Editar usuario",
+                width=15,
+                command=self.edit_user,
+            ).pack(side=tk.LEFT, padx=5)
+
+            tk.Button(
+                top_button_frame,
+                text="Eliminar usuario",
+                width=15,
+                command=self.delete_user,
+            ).pack(side=tk.LEFT, padx=5)
 
             tree = ttk.Treeview(
                 user_list_window,
@@ -98,3 +116,13 @@ class UserManagement:
             "Usuario Guardado", "El usuario ha sido registrado correctamente."
         )
         window.destroy()
+
+    def edit_user(self):
+        messagebox.showinfo(
+            "Editar Usuario", "¡El usuario ha sido editado correctamente!"
+        )
+
+    def delete_user(self):
+        messagebox.showinfo(
+            "Eliminar Usuario", "¡El usuario ha sido eliminado correctamente!"
+        )
