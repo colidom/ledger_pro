@@ -31,19 +31,16 @@ class UserDatabase:
         self.cursor.execute("""SELECT * FROM users""")
         return self.cursor.fetchall()
 
+    def update_user(
+        self, user_id, house_number, owner_name, owner_lastname, additional_field
+    ):
+        self.cursor.execute(
+            """UPDATE users SET house_number=?, owner_name=?, owner_lastname=?, additional_field=?
+               WHERE id=?""",
+            (house_number, owner_name, owner_lastname, additional_field, user_id),
+        )
+        self.conn.commit()
 
-# Ejemplo de uso
-if __name__ == "__main__":
-    db = UserDatabase("users.db")
-
-    # Insertar un nuevo usuario
-    db.insert_user(101, "John", "Doe", "additional_info")
-
-    # Obtener todos los usuarios
-    users = db.get_all_users()
-    print("Lista de usuarios:")
-    for user in users:
-        print(user)
-
-    # Cerrar la conexión con la base de datos
-    db.conn.close()
+    def delete_user(self, user_id):
+        self.cursor.execute("""DELETE FROM users WHERE id=?""", (user_id,))
+        self.conn.commit()
