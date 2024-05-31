@@ -95,8 +95,8 @@ class UserManagement:
         self.lastname_entry.pack(pady=5)
 
         tk.Label(user_window, text="Teléfono:").pack(pady=5)
-        self.additional_field_entry = tk.Entry(user_window)
-        self.additional_field_entry.pack(pady=5)
+        self.phone_entry = tk.Entry(user_window)
+        self.phone_entry.pack(pady=5)
 
         tk.Button(
             user_window,
@@ -108,17 +108,17 @@ class UserManagement:
         house_number = self.house_number_entry.get()
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
-        additional_field = self.additional_field_entry.get()
+        phone = self.phone_entry.get()
 
         if house_number and name and lastname:
-            self.db.insert_user(house_number, name, lastname, additional_field)
+            self.db.insert_user(house_number, name, lastname, phone)
             # Obtener el ID del usuario recién insertado
             user_id = self.db.cursor.lastrowid
             # Insertar la nueva fila en el Treeview
             self.tree.insert(
                 "",
                 tk.END,
-                values=(user_id, house_number, name, lastname, additional_field),
+                values=(user_id, house_number, name, lastname, phone),
             )
             messagebox.showinfo(
                 "Usuario Guardado", "El usuario ha sido registrado correctamente."
@@ -137,7 +137,7 @@ class UserManagement:
             house_number = values[1]
             name = values[2]
             lastname = values[3]
-            additional_field = values[4]
+            phone_entry = values[4]
 
             # Abrir la ventana de edición
             edit_window = tk.Toplevel()
@@ -160,9 +160,9 @@ class UserManagement:
             lastname_entry.pack(pady=5)
 
             tk.Label(edit_window, text="Teléfono:").pack(pady=5)
-            additional_field_entry = tk.Entry(edit_window)
-            additional_field_entry.insert(0, additional_field)
-            additional_field_entry.pack(pady=5)
+            phone_entry = tk.Entry(edit_window)
+            phone_entry.insert(0, phone_entry)
+            phone_entry.pack(pady=5)
 
             # Botón para guardar los cambios
             tk.Button(
@@ -173,7 +173,7 @@ class UserManagement:
                     house_number_entry.get(),
                     name_entry.get(),
                     lastname_entry.get(),
-                    additional_field_entry.get(),
+                    phone_entry.get(),
                     edit_window,
                 ),
             ).pack(pady=10)
