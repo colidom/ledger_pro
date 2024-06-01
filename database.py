@@ -14,7 +14,9 @@ class LadgerProDB:
                                 house_number INTEGER,
                                 owner_name TEXT,
                                 owner_lastname TEXT,
-                                phone TEXT
+                                phone TEXT,
+                                property_id INTEGER,
+                                FOREIGN KEY(property_id) REFERENCES properties(id)
                                 )"""
         )
         self.cursor.execute(
@@ -38,11 +40,13 @@ class LadgerProDB:
         )
         self.conn.commit()
 
-    def insert_neighbor(self, house_number, owner_name, owner_lastname, phone):
+    def insert_neighbor(
+        self, house_number, owner_name, owner_lastname, phone, property_id
+    ):
         self.cursor.execute(
-            """INSERT INTO neighbors (house_number, owner_name, owner_lastname, phone)
-                                VALUES (?, ?, ?, ?)""",
-            (house_number, owner_name, owner_lastname, phone),
+            """INSERT INTO neighbors (house_number, owner_name, owner_lastname, phone, property_id)
+                                VALUES (?, ?, ?, ?, ?)""",
+            (house_number, owner_name, owner_lastname, phone, property_id),
         )
         self.conn.commit()
 
@@ -51,12 +55,12 @@ class LadgerProDB:
         return self.cursor.fetchall()
 
     def update_neighbor(
-        self, neighbor_id, house_number, owner_name, owner_lastname, phone
+        self, neighbor_id, house_number, owner_name, owner_lastname, phone, property_id
     ):
         self.cursor.execute(
-            """UPDATE neighbors SET house_number=?, owner_name=?, owner_lastname=?, phone=?
+            """UPDATE neighbors SET house_number=?, owner_name=?, owner_lastname=?, phone=?, property_id=?
                WHERE id=?""",
-            (house_number, owner_name, owner_lastname, phone, neighbor_id),
+            (house_number, owner_name, owner_lastname, phone, property_id, neighbor_id),
         )
         self.conn.commit()
 
@@ -87,3 +91,21 @@ class LadgerProDB:
     def delete_property(self, property_id):
         self.cursor.execute("""DELETE FROM properties WHERE id=?""", (property_id,))
         self.conn.commit()
+
+    def get_properties_with_debt(self):
+        query = """
+            SELECT p.id, p.property_number, n.owner_name || ' ' || n.owner_lastname AS neighbor_name, p.debt_amount, 
+                GROUP_CONCAT(
+                    CASE 
+                        WHEN py.status = 'pending' 
+                        THEN py.month || ' ' || py.year || ': ' || py.amount || '€' 
+                    END, '; '
+                ) AS pending_payments
+            FROM properties p
+            JOIN neighbors n ON p.id = n.property_id
+            LEFT JOIN payments py ON n.id = py.neighbor_id
+            WHERE p.is_paid = 'No'
+            GROUP BY p.id, p.property_number, neighbor_name, p.debt_amount
+            """
+        self.cursor.execute(query)
+        return self.cursor.fetchall()

@@ -145,36 +145,22 @@ class NeighborManagement:
         ).pack(pady=10)
 
     def save_neighbor(self):
-        house_number = self.selected_property.get()
+        house_number = self.house_number_entry.get()
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
         phone = self.phone_entry.get()
+        property_id = self.property_id_entry.get()
 
-        if house_number and name and lastname:
-            # Obtener el ID de la Vivienda seleccionada
-            property_id = [
-                property_data[0]
-                for property_data in self.db.get_all_properties()
-                if property_data[1] == house_number
-            ][0]
-            self.db.insert_neighbor(house_number, name, lastname, phone)
-            # Obtener el ID del vecino recién insertado
-            neighbor_id = self.db.cursor.lastrowid
-            # Insertar la nueva fila en el Treeview
-            self.tree.insert(
-                "",
-                tk.END,
-                values=(neighbor_id, house_number, name, lastname, phone),
-            )
-            messagebox.showinfo(
-                "Usuario Guardado", "El vecino ha sido registrado correctamente."
-            )
-            # Cerrar la ventana de creación de vecino
-            self.neighbor_window.destroy()
-        else:
-            messagebox.showerror(
-                "Error", "Por favor complete todos los campos obligatorios."
-            )
+        if not house_number or not name or not lastname or not phone or not property_id:
+            messagebox.showerror("Error", "Todos los campos son obligatorios.")
+            return
+
+        try:
+            self.db.insert_neighbor(house_number, name, lastname, phone, property_id)
+            messagebox.showinfo("Éxito", "Vecino guardado exitosamente.")
+            self.view_neighbors()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar el vecino: {e}")
 
     def edit_neighbor(self):
         selected_item = self.tree.selection()[0]

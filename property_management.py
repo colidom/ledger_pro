@@ -89,6 +89,28 @@ class PropertyManagement:
             property_data[3] = f"{property_data[3]}€" if property_data[3] else "0€"
             self.tree.insert("", tk.END, values=property_data, tags=(tag,))
 
+    def open_debts_view(self):
+        properties_with_debt = self.db.get_properties_with_debt()
+        debt_list_window = tk.Toplevel()
+        debt_list_window.title("Deudas de Vecinos")
+        debt_list_window.geometry("800x300")
+
+        self.tree = ttk.Treeview(
+            debt_list_window,
+            columns=("Id", "Vivienda", "Vecino", "Deuda Total", "Pagos Pendientes"),
+            show="headings",
+        )
+        self.tree.heading("Id", text="Id")
+        self.tree.heading("Vivienda", text="Vivienda")
+        self.tree.heading("Vecino", text="Vecino")
+        self.tree.heading("Deuda Total", text="Deuda Total")
+        self.tree.heading("Pagos Pendientes", text="Pagos Pendientes")
+
+        for debt_data in properties_with_debt:
+            self.tree.insert("", tk.END, values=debt_data)
+
+        self.tree.pack(fill="both", expand=True)
+
     def open_create_property(self):
         self.create_property_window()
 

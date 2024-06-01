@@ -14,7 +14,7 @@ class MainWindow:
         # Inicializar el manejo de usuarios
         self.neighbor_management = NeighborManagement()
 
-        # Inicializar el manejo de usuarios
+        # Inicializar el manejo de propiedades
         self.property_management = PropertyManagement()
 
         self.create_widgets()
@@ -43,7 +43,10 @@ class MainWindow:
             self.root, text="Registro de Gastos", width=25, command=self.open_expenses
         ).pack(pady=5)
         tk.Button(
-            self.root, text="Deudas de Vecinos", width=25, command=self.open_debts
+            self.root,
+            text="Deudas de Vecinos",
+            width=25,
+            command=self.property_management.open_debts_view,
         ).pack(pady=5)
 
         # Enlace a GitHub
@@ -74,6 +77,3 @@ class MainWindow:
 
     def open_expenses(self):
         messagebox.showinfo("Gastos", "Aquí se abrirá el registro de gastos.")
-
-    def open_debts(self):
-        messagebox.showinfo("Deudas", "Aquí se abrirá la gestión de deudas.")
