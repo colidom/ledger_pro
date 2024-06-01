@@ -11,24 +11,24 @@ class PropertyManagement:
     def open_view_properties(self):
         properties = self.db.get_all_properties()
         property_list_window = tk.Toplevel()
-        property_list_window.title("Lista de Propiedades")
+        property_list_window.title("Lista de Viviendas")
         property_list_window.geometry("800x300")  # Aumentar el ancho de la ventana
 
         # Frame para los botones de arriba
         top_button_frame = tk.Frame(property_list_window)
         top_button_frame.pack(pady=10)
 
-        # Botones para registrar, editar, eliminar y exportar propiedades
+        # Botones para registrar, editar, eliminar y exportar viviendas
         tk.Button(
             top_button_frame,
-            text="Registrar propiedad",
+            text="Registrar vivienda",
             width=20,
             command=self.open_create_property,
         ).pack(side=tk.LEFT, padx=5)
 
         self.edit_button = tk.Button(
             top_button_frame,
-            text="Editar propiedad",
+            text="Editar vivienda",
             width=20,
             command=self.edit_property,
             state=tk.DISABLED,  # Inicialmente deshabilitado
@@ -37,20 +37,20 @@ class PropertyManagement:
 
         self.delete_button = tk.Button(
             top_button_frame,
-            text="Eliminar propiedad",
+            text="Eliminar vivienda",
             width=20,
             command=self.delete_property,
             state=tk.DISABLED,  # Inicialmente deshabilitado
         )
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        headers = ["Id", "Número de Propiedad", "Al Corriente de Pago", "Deuda Actual"]
+        headers = ["Id", "Vivienda", "Al Corriente de Pago", "Deuda Actual"]
         tk.Button(
             top_button_frame,
             text="Exportar a excel",
             width=20,
             command=lambda: export_to_excel(
-                properties, "propiedades", headers
+                properties, "viviendas", headers
             ),  # Llama a la función export_to_excel con los datos
         ).pack(side=tk.LEFT, padx=5)
 
@@ -58,14 +58,14 @@ class PropertyManagement:
             property_list_window,
             columns=(
                 "Id",
-                "Número de Propiedad",
+                "Vivienda",
                 "Al Corriente de Pago",
                 "Deuda Actual",
             ),
             show="headings",
         )
         self.tree.heading("Id", text="Id")
-        self.tree.heading("Número de Propiedad", text="Número de Propiedad")
+        self.tree.heading("Vivienda", text="Vivienda")
         self.tree.heading("Al Corriente de Pago", text="Al Corriente de Pago")
         self.tree.heading("Deuda Actual", text="Deuda Actual")
 
@@ -95,10 +95,10 @@ class PropertyManagement:
 
     def create_property_window(self):
         self.property_window = tk.Toplevel()
-        self.property_window.title("Registro de Propiedad")
+        self.property_window.title("Registro de Vivienda")
         self.property_window.geometry("300x300")
 
-        tk.Label(self.property_window, text="Número de Propiedad:").pack(pady=5)
+        tk.Label(self.property_window, text="Vivienda:").pack(pady=5)
         self.property_number_entry = tk.Entry(self.property_window)
         self.property_number_entry.pack(pady=5)
 
@@ -132,7 +132,7 @@ class PropertyManagement:
         debt_amount = self.debt_entry.get() if is_paid == "No" else "0"
 
         if property_number and is_paid:
-            # Eliminar la propiedad de marcador de posición "N/A" si existe
+            # Eliminar la Vivienda de marcador de posición "N/A" si existe
             for item in self.tree.get_children():
                 values = self.tree.item(item, "values")
                 if values[1] == "N/A":
@@ -140,7 +140,7 @@ class PropertyManagement:
                     break
 
             self.db.insert_property(property_number, is_paid, debt_amount)
-            # Obtener el ID de la propiedad recién insertada
+            # Obtener el ID de la vivienda recién insertada
             property_id = self.db.cursor.lastrowid
             # Insertar la nueva fila en el Treeview
             tag = "debt" if debt_amount != "0" else "no_debt"
@@ -151,9 +151,9 @@ class PropertyManagement:
                 tags=(tag,),
             )
             messagebox.showinfo(
-                "Propiedad Guardada", "La propiedad ha sido registrada correctamente."
+                "Vivienda Guardada", "La Vivienda ha sido registrada correctamente."
             )
-            # Cerrar la ventana de creación de propiedad
+            # Cerrar la ventana de creación de vivienda
             self.property_window.destroy()
         else:
             messagebox.showerror(
@@ -163,19 +163,19 @@ class PropertyManagement:
     def edit_property(self):
         selected_item = self.tree.selection()[0]
         if selected_item:
-            # Obtener los valores de la propiedad seleccionada
+            # Obtener los valores de la vivienda seleccionada
             values = self.tree.item(selected_item, "values")
-            property_id = values[0]  # ID de la propiedad
+            property_id = values[0]  # ID de la vivienda
             property_number = values[1]
             is_paid = values[2]
             debt_amount = values[3].replace("€", "")
 
             # Abrir la ventana de edición
             edit_window = tk.Toplevel()
-            edit_window.title("Editar Propiedad")
+            edit_window.title("Editar Vivienda")
             edit_window.geometry("300x300")
 
-            tk.Label(edit_window, text="Número de Propiedad:").pack(pady=5)
+            tk.Label(edit_window, text="Vivienda:").pack(pady=5)
             property_number_entry = tk.Entry(edit_window)
             property_number_entry.insert(0, property_number)
             property_number_entry.pack(pady=5)
@@ -222,8 +222,8 @@ class PropertyManagement:
                 tags=(tag,),
             )
             messagebox.showinfo(
-                "Propiedad Actualizada",
-                "La propiedad ha sido actualizada correctamente.",
+                "Vivienda Actualizada",
+                "La vivienda ha sido actualizada correctamente.",
             )
             window.destroy()
         else:
@@ -243,21 +243,21 @@ class PropertyManagement:
         if selected_item:
             confirmation = messagebox.askyesno(
                 "Confirmar Eliminación",
-                "¿Está seguro de que desea eliminar esta propiedad?",
+                "¿Está seguro de que desea eliminar esta Vivienda?",
             )
             if confirmation:
-                # Obtener el ID de la propiedad seleccionada
+                # Obtener el ID de la Vivienda seleccionada
                 property_id = self.tree.item(selected_item, "values")[0]
-                # Eliminar la propiedad de la base de datos
+                # Eliminar la Vivienda de la base de datos
                 self.db.delete_property(property_id)
-                # Eliminar la propiedad de la vista
+                # Eliminar la Vivienda de la vista
                 self.tree.delete(selected_item)
                 messagebox.showinfo(
-                    "Propiedad Eliminada",
-                    "La propiedad ha sido eliminada correctamente.",
+                    "Vivienda Eliminada",
+                    "La Vivienda ha sido eliminada correctamente.",
                 )
         else:
-            messagebox.showerror("Error", "Por favor seleccione una propiedad.")
+            messagebox.showerror("Error", "Por favor seleccione una Vivienda.")
 
     def on_tree_select(self, event):
         selected_item = self.tree.selection()

@@ -107,16 +107,16 @@ class UserManagement:
 
         tk.Label(self.user_window, text="Vivienda:").pack(pady=5)
 
-        # Aquí agregamos el Combobox para seleccionar la propiedad
+        # Aquí agregamos el Combobox para seleccionar la Vivienda
         properties = self.db.get_all_properties()
         property_options = [property_data[1] for property_data in properties]
         self.selected_property = tk.StringVar(self.user_window)
 
-        # Verificar si hay propiedades
+        # Verificar si hay viviendas
         if property_options:
             self.selected_property.set(property_options[0])
         else:
-            property_options = ["No se han dado de alta propiedades aún"]
+            property_options = ["No se han dado de alta viviendas aún"]
             self.selected_property.set(property_options[0])
 
         ttk.Combobox(
@@ -151,7 +151,7 @@ class UserManagement:
         phone = self.phone_entry.get()
 
         if house_number and name and lastname:
-            # Obtener el ID de la propiedad seleccionada
+            # Obtener el ID de la Vivienda seleccionada
             property_id = [
                 property_data[0]
                 for property_data in self.db.get_all_properties()
