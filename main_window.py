@@ -3,6 +3,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from neighbor_management import NeighborManagement
 from property_management import PropertyManagement
+from debts_management import DebtsManagement
 
 
 class MainWindow:
@@ -16,6 +17,9 @@ class MainWindow:
 
         # Inicializar el manejo de propiedades
         self.property_management = PropertyManagement()
+
+        # Inicializar el manejo de deudas
+        self.debts_management = DebtsManagement()
 
         self.create_widgets()
 
@@ -46,7 +50,7 @@ class MainWindow:
             self.root,
             text="Deudas de Vecinos",
             width=25,
-            command=self.property_management.open_debts_view,
+            command=self.debts_management.open_debts_view,
         ).pack(pady=5)
 
         # Enlace a GitHub
