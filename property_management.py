@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import UserDatabase
+from database import LadgerProDB
 from export_to_excel import export_to_excel
 
 
-class HousingManagement:
+class PropertyManagement:
     def __init__(self):
-        self.db = UserDatabase("users.db")
+        self.db = LadgerProDB("ladger_pro.db")
 
-    def open_view_housing(self):
+    def open_view_properties(self):
         messagebox.showinfo("Viviendas", "Aquí se abrirá el registro de Vivienda.")

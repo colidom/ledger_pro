@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
 from user_management import UserManagement
-from housing_management import HousingManagement
+from property_management import PropertyManagement
 
 
 class MainWindow:
@@ -15,7 +15,7 @@ class MainWindow:
         self.user_management = UserManagement()
 
         # Inicializar el manejo de usuarios
-        self.housing_management = HousingManagement()
+        self.property_management = PropertyManagement()
 
         self.create_widgets()
 
@@ -34,7 +34,7 @@ class MainWindow:
             self.root,
             text="Viviendas",
             width=25,
-            command=self.housing_management.open_view_housing,
+            command=self.property_management.open_view_properties,
         ).pack(pady=5)
         tk.Button(
             self.root, text="Registro de Ingresos", width=25, command=self.open_income

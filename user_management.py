@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import UserDatabase
+from database import LadgerProDB
 from export_to_excel import export_to_excel
 
 
 class UserManagement:
     def __init__(self):
-        self.db = UserDatabase("users.db")
+        self.db = LadgerProDB("ladger_pro.db")
 
     def open_create_user(self):
         self.create_user_window()
