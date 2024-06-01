@@ -144,21 +144,39 @@ class NeighborManagement:
             command=self.save_neighbor,
         ).pack(pady=10)
 
+    def refresh_neighbor_list(self):
+        neighbors = self.db.get_all_neighbors()
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for neighbor in neighbors:
+            self.tree.insert("", tk.END, values=neighbor)
+
     def save_neighbor(self):
-        house_number = self.house_number_entry.get()
+        house_number = self.selected_property.get()
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
         phone = self.phone_entry.get()
-        property_id = self.property_id_entry.get()
 
-        if not house_number or not name or not lastname or not phone or not property_id:
+        if not house_number or not name or not lastname or not phone:
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
+            return
+
+        property_id = None
+        properties = self.db.get_all_properties()
+        for prop in properties:
+            if prop[1] == house_number:
+                property_id = prop[0]
+                break
+
+        if property_id is None:
+            messagebox.showerror("Error", "No se encontró la vivienda seleccionada.")
             return
 
         try:
             self.db.insert_neighbor(house_number, name, lastname, phone, property_id)
             messagebox.showinfo("Éxito", "Vecino guardado exitosamente.")
-            self.view_neighbors()
+            self.neighbor_window.destroy()  # Cerrar la ventana de creación
+            self.refresh_neighbor_list()  # Refrescar la lista de vecinos
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el vecino: {e}")
 
