@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from classes.NeighborManagement import NeighborManagement
 from classes.PropertyManagement import PropertyManagement
 from classes.DebtsManagement import DebtsManagement
+from classes.IncomeManagement import IncomeManagement
 
 
 class MainWindow:
@@ -20,6 +21,9 @@ class MainWindow:
 
         # Inicializar el manejo de deudas
         self.debts_management = DebtsManagement()
+
+        # Inicializar el manejo de ingresos
+        self.income_management = IncomeManagement()
 
         self.create_widgets()
 
@@ -41,7 +45,10 @@ class MainWindow:
             command=self.property_management.open_view_properties,
         ).pack(pady=5)
         tk.Button(
-            self.root, text="Registro de Ingresos", width=25, command=self.open_income
+            self.root,
+            text="Registro de Ingresos",
+            width=25,
+            command=self.income_management.open_incomes_view,
         ).pack(pady=5)
         tk.Button(
             self.root, text="Registro de Gastos", width=25, command=self.open_expenses
@@ -75,9 +82,6 @@ class MainWindow:
         import webbrowser
 
         webbrowser.open_new("https://github.com/colidom/ledger_pro")
-
-    def open_income(self):
-        messagebox.showinfo("Ingresos", "Aquí se abrirá el registro de ingresos.")
 
     def open_expenses(self):
         messagebox.showinfo("Gastos", "Aquí se abrirá el registro de gastos.")

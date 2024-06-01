@@ -38,6 +38,16 @@ class LadgerProDB:
                             FOREIGN KEY(neighbor_id) REFERENCES neighbors(id)
                             )"""
         )
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS incomes (
+                            id INTEGER PRIMARY KEY,
+                            amount INTEGER,
+                            entity TEXT,
+                            date TEXT,
+                            description TEXT, 
+                            FOREIGN KEY(entity) REFERENCES properties(property_number)
+                            )"""
+        )
         self.conn.commit()
 
     def insert_neighbor(
@@ -108,4 +118,15 @@ class LadgerProDB:
             GROUP BY p.id, p.property_number, neighbor_name, p.debt_amount
             """
         self.cursor.execute(query)
+        return self.cursor.fetchall()
+
+    def insert_income(self, amount, entity, date, description):
+        self.cursor.execute(
+            """INSERT INTO incomes (amount, entity, date, description) VALUES (?, ?, ?, ?)""",
+            (amount, entity, date, description),
+        )
+        self.conn.commit()
+
+    def get_all_incomes(self):
+        self.cursor.execute("""SELECT * FROM incomes""")
         return self.cursor.fetchall()
