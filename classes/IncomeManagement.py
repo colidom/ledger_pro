@@ -26,6 +26,20 @@ class IncomeManagement:
             command=self.open_add_income_window,
         ).pack(side=tk.LEFT, padx=5)
 
+        tk.Button(
+            top_button_frame,
+            text="Editar Ingreso",
+            width=20,
+            command=self.edit_income,
+        ).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(
+            top_button_frame,
+            text="Eliminar Ingreso",
+            width=20,
+            command=self.delete_income,
+        ).pack(side=tk.LEFT, padx=5)
+
         headers = ["Id", "Cantidad", "Entidad", "Fecha", "Descripción"]
 
         tk.Button(
@@ -37,6 +51,7 @@ class IncomeManagement:
             ),
         ).pack(side=tk.LEFT, padx=5)
 
+        # Crear el Treeview para mostrar el listado de ingresos
         self.tree = ttk.Treeview(
             self.income_window,
             columns=("Id", "Cantidad", "Entidad", "Fecha", "Descripción"),
@@ -48,6 +63,7 @@ class IncomeManagement:
         self.tree.heading("Fecha", text="Fecha")
         self.tree.heading("Descripción", text="Descripción")
 
+        # Cargar los ingresos en el Treeview
         self.load_incomes_into_tree()
 
         self.tree.pack(fill="both", expand=True)
@@ -113,6 +129,110 @@ class IncomeManagement:
             self.load_incomes_into_tree()
         else:
             messagebox.showerror("Error", "Por favor complete todos los campos.")
+
+    def edit_income(self):
+        selected_item = self.tree.selection()
+        if selected_item:
+            # Obtener los valores del ingreso seleccionado
+            values = self.tree.item(selected_item, "values")
+            income_id = values[0]
+            amount = values[1].split()[0]  # Eliminar el símbolo de euro
+            entity = values[2]
+            date = values[3]
+            description = values[4]
+            # Abrir ventana para editar ingreso con los valores seleccionados
+            self.open_edit_income_window(income_id, amount, entity, date, description)
+        else:
+            messagebox.showerror("Error", "Por favor seleccione un ingreso.")
+
+    def open_edit_income_window(self, income_id, amount, entity, date, description):
+        self.edit_income_window = tk.Toplevel()
+        self.edit_income_window.title("Editar Ingreso")
+        self.edit_income_window.geometry("400x300")
+
+        tk.Label(self.edit_income_window, text="Cantidad de Ingreso:").pack()
+        self.edit_income_amount_entry = tk.Entry(self.edit_income_window)
+        self.edit_income_amount_entry.insert(0, amount)
+        self.edit_income_amount_entry.pack()
+
+        tk.Label(self.edit_income_window, text="Entidad que realiza el ingreso:").pack()
+        self.edit_income_entity_var = tk.StringVar(self.edit_income_window)
+        entities = self.get_property_list() + ["Otros"]
+        self.edit_income_entity_var.set(entity)
+        self.edit_income_entity_menu = tk.OptionMenu(
+            self.edit_income_window, self.edit_income_entity_var, *entities
+        )
+        self.edit_income_entity_menu.pack()
+
+        tk.Label(self.edit_income_window, text="Fecha del Ingreso (DD/MM/YYYY):").pack()
+        self.edit_income_date_entry = tk.Entry(self.edit_income_window)
+        self.edit_income_date_entry.insert(0, date)
+        self.edit_income_date_entry.pack()
+
+        tk.Label(self.edit_income_window, text="Descripción:").pack()
+        self.edit_income_description_entry = tk.Text(
+            self.edit_income_window, height=5, width=30
+        )
+        self.edit_income_description_entry.insert(tk.END, description)
+        self.edit_income_description_entry.pack()
+
+        tk.Button(
+            self.edit_income_window,
+            text="Guardar Cambios",
+            command=self.save_edited_income,
+        ).pack(pady=10)
+
+    def delete_income(self):
+        selected_item = self.tree.selection()
+        if selected_item:
+            confirmation = messagebox.askyesno(
+                "Confirmar Eliminación",
+                "¿Está seguro de que desea eliminar este ingreso?",
+            )
+            if confirmation:
+                # Obtener el ID del ingreso seleccionado
+                income_id = self.tree.item(selected_item, "values")[0]
+                # Eliminar el ingreso de la base de datos
+                self.db.delete_income(income_id)
+                # Eliminar el ingreso de la vista
+                self.tree.delete(selected_item)
+                messagebox.showinfo(
+                    "Ingreso Eliminado",
+                    "El ingreso ha sido eliminado correctamente.",
+                )
+        else:
+            messagebox.showerror("Error", "Por favor seleccione un ingreso.")
+
+    def save_edited_income(self):
+        amount = self.edit_income_amount_entry.get()
+        entity = self.edit_income_entity_var.get()
+        date = self.edit_income_date_entry.get()
+        description = self.edit_income_description_entry.get("1.0", "end-1c")
+
+        try:
+            formatted_date = datetime.strptime(date, "%d/%m/%Y").strftime("%Y-%m-%d")
+        except ValueError:
+            messagebox.showerror(
+                "Error", "Por favor ingrese una fecha válida (DD/MM/YYYY)."
+            )
+            return
+
+        selected_item = self.tree.selection()
+        if selected_item:
+            income_id = self.tree.item(selected_item, "values")[0]
+            if amount and entity and formatted_date:
+                self.db.update_income(
+                    income_id, amount, entity, formatted_date, description
+                )
+                messagebox.showinfo(
+                    "Éxito", "El ingreso ha sido actualizado correctamente."
+                )
+                self.edit_income_window.destroy()
+                self.load_incomes_into_tree()
+            else:
+                messagebox.showerror("Error", "Por favor complete todos los campos.")
+        else:
+            messagebox.showerror("Error", "Por favor seleccione un ingreso.")
 
     def load_incomes_into_tree(self):
         incomes = self.db.get_all_incomes()

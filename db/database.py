@@ -127,6 +127,13 @@ class LadgerProDB:
         )
         self.conn.commit()
 
+    def update_income(self, income_id, amount, entity, date, description):
+        query = (
+            "UPDATE incomes SET amount=?, entity=?, date=?, description=? WHERE id=?"
+        )
+        self.cursor.execute(query, (amount, entity, date, description, income_id))
+        self.conn.commit()
+
     def get_all_incomes(self):
         self.cursor.execute("""SELECT * FROM incomes""")
         return self.cursor.fetchall()
