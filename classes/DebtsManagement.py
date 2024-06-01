@@ -30,7 +30,17 @@ class DebtsManagement:
         self.tree.heading("Pagos Pendientes", text="Pagos Pendientes")
 
         for debt_data in properties_with_debt:
-            self.tree.insert("", tk.END, values=debt_data)
+            self.tree.insert(
+                "",
+                tk.END,
+                values=(
+                    debt_data[0],
+                    debt_data[1],
+                    debt_data[2],
+                    f"{debt_data[3]}€",
+                    debt_data[4],
+                ),
+            )
 
         self.tree.pack(fill="both", expand=True)
 
