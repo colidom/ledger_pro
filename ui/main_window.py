@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-from neighbor_management import NeighborManagement
-from property_management import PropertyManagement
-from debts_management import DebtsManagement
+from classes.NeighborManagement import NeighborManagement
+from classes.PropertyManagement import PropertyManagement
+from classes.DebtsManagement import DebtsManagement
 
 
 class MainWindow:

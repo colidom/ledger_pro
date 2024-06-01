@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import LadgerProDB
-from export_to_excel import export_to_excel
+from db.database import LadgerProDB
+from utils.export_to_excel import export_to_excel
 
 
 class PropertyManagement:
