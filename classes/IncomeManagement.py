@@ -60,7 +60,7 @@ class IncomeManagement:
     def open_add_income_window(self):
         self.add_income_window = tk.Toplevel()
         self.add_income_window.title("Añadir Ingreso")
-        self.add_income_window.geometry("300x250")
+        self.add_income_window.geometry("400x300")
 
         tk.Label(self.add_income_window, text="Cantidad de Ingreso:").pack()
         self.income_amount_entry = tk.Entry(self.add_income_window)
@@ -75,29 +75,39 @@ class IncomeManagement:
         )
         self.income_entity_menu.pack()
 
-        tk.Label(self.add_income_window, text="Fecha del Ingreso:").pack()
+        tk.Label(self.add_income_window, text="Fecha del Ingreso (DD/MM/YYYY):").pack()
         self.income_date_entry = tk.Entry(self.add_income_window)
         self.income_date_entry.insert(
-            0, datetime.now().strftime("%Y-%m-%d")
+            0, datetime.now().strftime("%d/%m/%Y")
         )  # Fecha por defecto: hoy
         self.income_date_entry.pack()
 
         tk.Label(self.add_income_window, text="Descripción:").pack()
-        self.income_description_entry = tk.Entry(self.add_income_window)
+        self.income_description_entry = tk.Text(
+            self.add_income_window, height=5, width=30
+        )
         self.income_description_entry.pack()
 
         tk.Button(
             self.add_income_window, text="Guardar Ingreso", command=self.save_income
-        ).pack()
+        ).pack(pady=10)
 
     def save_income(self):
         amount = self.income_amount_entry.get()
         entity = self.income_entity_var.get()
         date = self.income_date_entry.get()
-        description = self.income_description_entry.get()
+        description = self.income_description_entry.get("1.0", "end-1c")
 
-        if amount and entity and date:
-            self.db.insert_income(amount, entity, date, description)
+        try:
+            formatted_date = datetime.strptime(date, "%d/%m/%Y").strftime("%Y-%m-%d")
+        except ValueError:
+            messagebox.showerror(
+                "Error", "Por favor ingrese una fecha válida (DD/MM/YYYY)."
+            )
+            return
+
+        if amount and entity and formatted_date:
+            self.db.insert_income(amount, entity, formatted_date, description)
             messagebox.showinfo("Éxito", "El ingreso ha sido registrado correctamente.")
             self.add_income_window.destroy()
             self.load_incomes_into_tree()
@@ -110,8 +120,12 @@ class IncomeManagement:
             self.tree.delete(income)
         for income in incomes:
             income_with_euro = list(income)
-            income_date = datetime.strptime(income[3], "%Y-%m-%d")
-            income_with_euro[3] = income_date.strftime("%d/%m/%Y")
+            # Verificar si la fecha ya está en el formato correcto
+            if "/" in income[3]:
+                income_date = datetime.strptime(income[3], "%d/%m/%Y")
+            else:
+                income_date = datetime.strptime(income[3], "%Y-%m-%d")
+            income_with_euro[3] = income_date.strftime("%d/%m/%Y")  # Formatear la fecha
             income_with_euro[1] = f"{income[1]} €"
             self.tree.insert("", tk.END, values=income_with_euro)
 
