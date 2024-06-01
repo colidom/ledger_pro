@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-from user_management import UserManagement
+from neighbor_management import NeighborManagement
 from property_management import PropertyManagement
 
 
@@ -12,7 +12,7 @@ class MainWindow:
         self.root.geometry("400x400")
 
         # Inicializar el manejo de usuarios
-        self.user_management = UserManagement()
+        self.neighbor_management = NeighborManagement()
 
         # Inicializar el manejo de usuarios
         self.property_management = PropertyManagement()
@@ -26,9 +26,9 @@ class MainWindow:
         # Botón para ver usuarios
         tk.Button(
             self.root,
-            text="Usuarios",
+            text="Vecinos",
             width=25,
-            command=self.user_management.open_view_users,
+            command=self.neighbor_management.open_view_neighbors,
         ).pack(pady=5)
         tk.Button(
             self.root,

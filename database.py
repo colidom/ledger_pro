@@ -9,7 +9,7 @@ class LadgerProDB:
 
     def create_tables(self):
         self.cursor.execute(
-            """CREATE TABLE IF NOT EXISTS users (
+            """CREATE TABLE IF NOT EXISTS neighbors (
                                 id INTEGER PRIMARY KEY,
                                 house_number INTEGER,
                                 owner_name TEXT,
@@ -25,30 +25,43 @@ class LadgerProDB:
                                 debt_amount REAL
                                 )"""
         )
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS payments (
+                            id INTEGER PRIMARY KEY,
+                            neighbor_id INTEGER,
+                            amount INTEGER,
+                            month TEXT,
+                            year INTEGER,
+                            status TEXT, -- "paid" o "pending"
+                            FOREIGN KEY(neighbor_id) REFERENCES neighbors(id)
+                            )"""
+        )
         self.conn.commit()
 
-    def insert_user(self, house_number, owner_name, owner_lastname, phone):
+    def insert_neighbor(self, house_number, owner_name, owner_lastname, phone):
         self.cursor.execute(
-            """INSERT INTO users (house_number, owner_name, owner_lastname, phone)
+            """INSERT INTO neighbors (house_number, owner_name, owner_lastname, phone)
                                 VALUES (?, ?, ?, ?)""",
             (house_number, owner_name, owner_lastname, phone),
         )
         self.conn.commit()
 
-    def get_all_users(self):
-        self.cursor.execute("""SELECT * FROM users""")
+    def get_all_neighbors(self):
+        self.cursor.execute("""SELECT * FROM neighbors""")
         return self.cursor.fetchall()
 
-    def update_user(self, user_id, house_number, owner_name, owner_lastname, phone):
+    def update_neighbor(
+        self, neighbor_id, house_number, owner_name, owner_lastname, phone
+    ):
         self.cursor.execute(
-            """UPDATE users SET house_number=?, owner_name=?, owner_lastname=?, phone=?
+            """UPDATE neighbors SET house_number=?, owner_name=?, owner_lastname=?, phone=?
                WHERE id=?""",
-            (house_number, owner_name, owner_lastname, phone, user_id),
+            (house_number, owner_name, owner_lastname, phone, neighbor_id),
         )
         self.conn.commit()
 
-    def delete_user(self, user_id):
-        self.cursor.execute("""DELETE FROM users WHERE id=?""", (user_id,))
+    def delete_neighbor(self, neighbor_id):
+        self.cursor.execute("""DELETE FROM neighbors WHERE id=?""", (neighbor_id,))
         self.conn.commit()
 
     def insert_property(self, property_number, is_paid, debt_amount):

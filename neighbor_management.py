@@ -4,45 +4,45 @@ from database import LadgerProDB
 from export_to_excel import export_to_excel
 
 
-class UserManagement:
+class NeighborManagement:
     def __init__(self):
         self.db = LadgerProDB("ladger_pro.db")
 
-    def open_create_user(self):
-        self.create_user_window()
+    def open_create_neighbor(self):
+        self.create_neighbor_window()
 
-    def open_view_users(self):
-        users = self.db.get_all_users()
-        user_list_window = tk.Toplevel()
-        user_list_window.title("Lista de Usuarios")
-        user_list_window.geometry("700x300")
+    def open_view_neighbors(self):
+        neighbors = self.db.get_all_neighbors()
+        neighbor_list_window = tk.Toplevel()
+        neighbor_list_window.title("Lista de Usuarios")
+        neighbor_list_window.geometry("700x300")
 
         # Frame para los botones de arriba
-        top_button_frame = tk.Frame(user_list_window)
+        top_button_frame = tk.Frame(neighbor_list_window)
         top_button_frame.pack(pady=10)
 
         # Botones para registrar, editar, eliminar y exportar usuarios
         tk.Button(
             top_button_frame,
-            text="Registrar usuario",
+            text="Registrar vecino",
             width=15,
-            command=self.open_create_user,
+            command=self.open_create_neighbor,
         ).pack(side=tk.LEFT, padx=5)
 
         self.edit_button = tk.Button(
             top_button_frame,
-            text="Editar usuario",
+            text="Editar vecino",
             width=15,
-            command=self.edit_user,
+            command=self.edit_neighbor,
             state=tk.DISABLED,  # Inicialmente deshabilitado
         )
         self.edit_button.pack(side=tk.LEFT, padx=5)
 
         self.delete_button = tk.Button(
             top_button_frame,
-            text="Eliminar usuario",
+            text="Eliminar vecino",
             width=15,
-            command=self.delete_user,
+            command=self.delete_neighbor,
             state=tk.DISABLED,  # Inicialmente deshabilitado
         )
         self.delete_button.pack(side=tk.LEFT, padx=5)
@@ -53,12 +53,12 @@ class UserManagement:
             text="Exportar a excel",
             width=15,
             command=lambda: export_to_excel(
-                users, "usuarios", headers
-            ),  # Llama a la función export_to_excel con los datos de usuario y el nombre por defecto "usuarios"
+                neighbors, "usuarios", headers
+            ),  # Llama a la función export_to_excel con los datos de vecino y el nombre por defecto "usuarios"
         ).pack(side=tk.LEFT, padx=5)
 
         self.tree = ttk.Treeview(
-            user_list_window,
+            neighbor_list_window,
             columns=(
                 "Id",
                 "Vivienda",
@@ -75,10 +75,10 @@ class UserManagement:
         self.tree.heading("Teléfono", text="Teléfono")
 
         # Calcular el ancho máximo de cada columna
-        if users:
+        if neighbors:
             max_widths = [
-                max(len(str(user[i])) for user in users) * 10
-                for i in range(len(users[0]))
+                max(len(str(neighbor[i])) for neighbor in neighbors) * 10
+                for i in range(len(neighbors[0]))
             ]
         else:
             max_widths = [
@@ -93,24 +93,24 @@ class UserManagement:
         for i, column in enumerate(self.tree["columns"]):
             self.tree.column(column, width=max_widths[i])
 
-        for user in users:
-            self.tree.insert("", tk.END, values=user)
+        for neighbor in neighbors:
+            self.tree.insert("", tk.END, values=neighbor)
         self.tree.pack(fill="both", expand=True)
 
         # Enlazar la función de selección del árbol
         self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
 
-    def create_user_window(self):
-        self.user_window = tk.Toplevel()
-        self.user_window.title("Registro de Usuario")
-        self.user_window.geometry("300x300")
+    def create_neighbor_window(self):
+        self.neighbor_window = tk.Toplevel()
+        self.neighbor_window.title("Registro de Usuario")
+        self.neighbor_window.geometry("300x300")
 
-        tk.Label(self.user_window, text="Vivienda:").pack(pady=5)
+        tk.Label(self.neighbor_window, text="Vivienda:").pack(pady=5)
 
         # Aquí agregamos el Combobox para seleccionar la Vivienda
         properties = self.db.get_all_properties()
         property_options = [property_data[1] for property_data in properties]
-        self.selected_property = tk.StringVar(self.user_window)
+        self.selected_property = tk.StringVar(self.neighbor_window)
 
         # Verificar si hay viviendas
         if property_options:
@@ -120,31 +120,31 @@ class UserManagement:
             self.selected_property.set(property_options[0])
 
         ttk.Combobox(
-            self.user_window,
+            self.neighbor_window,
             textvariable=self.selected_property,
             values=property_options,
         ).pack(pady=5)
 
-        tk.Label(self.user_window, text="Nombre:").pack(pady=5)
-        self.name_entry = tk.Entry(self.user_window)
+        tk.Label(self.neighbor_window, text="Nombre:").pack(pady=5)
+        self.name_entry = tk.Entry(self.neighbor_window)
         self.name_entry.pack(pady=5)
 
-        tk.Label(self.user_window, text="Apellidos:").pack(pady=5)
-        self.lastname_entry = tk.Entry(self.user_window)
+        tk.Label(self.neighbor_window, text="Apellidos:").pack(pady=5)
+        self.lastname_entry = tk.Entry(self.neighbor_window)
         self.lastname_entry.pack(pady=5)
 
-        tk.Label(self.user_window, text="Teléfono:").pack(pady=5)
-        self.phone_entry = tk.Entry(self.user_window)
+        tk.Label(self.neighbor_window, text="Teléfono:").pack(pady=5)
+        self.phone_entry = tk.Entry(self.neighbor_window)
         self.phone_entry.pack(pady=5)
 
-        # Botón para guardar el usuario
+        # Botón para guardar el vecino
         tk.Button(
-            self.user_window,
+            self.neighbor_window,
             text="Guardar",
-            command=self.save_user,
+            command=self.save_neighbor,
         ).pack(pady=10)
 
-    def save_user(self):
+    def save_neighbor(self):
         house_number = self.selected_property.get()
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
@@ -157,31 +157,31 @@ class UserManagement:
                 for property_data in self.db.get_all_properties()
                 if property_data[1] == house_number
             ][0]
-            self.db.insert_user(house_number, name, lastname, phone)
-            # Obtener el ID del usuario recién insertado
-            user_id = self.db.cursor.lastrowid
+            self.db.insert_neighbor(house_number, name, lastname, phone)
+            # Obtener el ID del vecino recién insertado
+            neighbor_id = self.db.cursor.lastrowid
             # Insertar la nueva fila en el Treeview
             self.tree.insert(
                 "",
                 tk.END,
-                values=(user_id, house_number, name, lastname, phone),
+                values=(neighbor_id, house_number, name, lastname, phone),
             )
             messagebox.showinfo(
-                "Usuario Guardado", "El usuario ha sido registrado correctamente."
+                "Usuario Guardado", "El vecino ha sido registrado correctamente."
             )
-            # Cerrar la ventana de creación de usuario
-            self.user_window.destroy()
+            # Cerrar la ventana de creación de vecino
+            self.neighbor_window.destroy()
         else:
             messagebox.showerror(
                 "Error", "Por favor complete todos los campos obligatorios."
             )
 
-    def edit_user(self):
+    def edit_neighbor(self):
         selected_item = self.tree.selection()[0]
         if selected_item:
-            # Obtener los valores del usuario seleccionado
+            # Obtener los valores del vecino seleccionado
             values = self.tree.item(selected_item, "values")
-            user_id = values[0]  # ID del usuario
+            neighbor_id = values[0]  # ID del vecino
             house_number = values[1]
             name = values[2]
             lastname = values[3]
@@ -216,8 +216,8 @@ class UserManagement:
             tk.Button(
                 edit_window,
                 text="Guardar Cambios",
-                command=lambda: self.update_user(
-                    user_id,
+                command=lambda: self.update_neighbor(
+                    neighbor_id,
                     house_number_entry.get(),
                     name_entry.get(),
                     lastname_entry.get(),
@@ -226,21 +226,23 @@ class UserManagement:
                 ),
             ).pack(pady=10)
         else:
-            messagebox.showerror("Error", "Por favor seleccione un usuario.")
+            messagebox.showerror("Error", "Por favor seleccione un vecino.")
 
-    def update_user(
-        self, user_id, house_number, name, lastname, additional_field, window
+    def update_neighbor(
+        self, neighbor_id, house_number, name, lastname, additional_field, window
     ):
         if house_number and name and lastname:
-            self.db.update_user(user_id, house_number, name, lastname, additional_field)
+            self.db.update_neighbor(
+                neighbor_id, house_number, name, lastname, additional_field
+            )
             # Actualizar la fila en el Treeview con los nuevos valores
             selected_item = self.tree.selection()
             self.tree.item(
                 selected_item,
-                values=(user_id, house_number, name, lastname, additional_field),
+                values=(neighbor_id, house_number, name, lastname, additional_field),
             )
             messagebox.showinfo(
-                "Usuario Actualizado", "El usuario ha sido actualizado correctamente."
+                "Usuario Actualizado", "El vecino ha sido actualizado correctamente."
             )
             window.destroy()
         else:
@@ -248,25 +250,25 @@ class UserManagement:
                 "Error", "Por favor complete todos los campos obligatorios."
             )
 
-    def delete_user(self):
+    def delete_neighbor(self):
         selected_item = self.tree.selection()
         if selected_item:
             confirmation = messagebox.askyesno(
                 "Confirmar Eliminación",
-                "¿Está seguro de que desea eliminar este usuario?",
+                "¿Está seguro de que desea eliminar este vecino?",
             )
             if confirmation:
-                # Obtener el ID del usuario seleccionado
-                user_id = self.tree.item(selected_item, "values")[0]
-                # Eliminar el usuario de la base de datos
-                self.db.delete_user(user_id)
-                # Eliminar el usuario de la vista
+                # Obtener el ID del vecino seleccionado
+                neighbor_id = self.tree.item(selected_item, "values")[0]
+                # Eliminar el vecino de la base de datos
+                self.db.delete_neighbor(neighbor_id)
+                # Eliminar el vecino de la vista
                 self.tree.delete(selected_item)
                 messagebox.showinfo(
-                    "Usuario Eliminado", "El usuario ha sido eliminado correctamente."
+                    "Usuario Eliminado", "El vecino ha sido eliminado correctamente."
                 )
         else:
-            messagebox.showerror("Error", "Por favor seleccione un usuario.")
+            messagebox.showerror("Error", "Por favor seleccione un vecino.")
 
     def on_tree_select(self, event):
         selected_item = self.tree.selection()
