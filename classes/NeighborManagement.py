@@ -100,6 +100,13 @@ class NeighborManagement:
         # Enlazar la función de selección del árbol
         self.tree.bind("<ButtonRelease-1>", self.on_tree_select)
 
+        # Botón para cerrar la ventana
+        tk.Button(
+            neighbor_list_window,
+            text="Cerrar",
+            command=neighbor_list_window.destroy,
+        ).pack(side=tk.BOTTOM, padx=5)
+
     def create_neighbor_window(self):
         self.neighbor_window = tk.Toplevel()
         self.neighbor_window.title("Registro de Usuario")

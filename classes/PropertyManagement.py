@@ -79,6 +79,13 @@ class PropertyManagement:
 
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
+        # Botón para cerrar la ventana
+        tk.Button(
+            property_list_window,
+            text="Cerrar",
+            command=property_list_window.destroy,
+        ).pack(side=tk.BOTTOM, padx=5)
+
     def load_properties_into_tree(self, properties):
         for property_data in properties:
             property_data = list(property_data)
