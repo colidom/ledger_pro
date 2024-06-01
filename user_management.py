@@ -125,6 +125,25 @@ class UserManagement:
             values=property_options,
         ).pack(pady=5)
 
+        tk.Label(self.user_window, text="Nombre:").pack(pady=5)
+        self.name_entry = tk.Entry(self.user_window)
+        self.name_entry.pack(pady=5)
+
+        tk.Label(self.user_window, text="Apellidos:").pack(pady=5)
+        self.lastname_entry = tk.Entry(self.user_window)
+        self.lastname_entry.pack(pady=5)
+
+        tk.Label(self.user_window, text="Teléfono:").pack(pady=5)
+        self.phone_entry = tk.Entry(self.user_window)
+        self.phone_entry.pack(pady=5)
+
+        # Botón para guardar el usuario
+        tk.Button(
+            self.user_window,
+            text="Guardar",
+            command=self.save_user,
+        ).pack(pady=10)
+
     def save_user(self):
         house_number = self.selected_property.get()
         name = self.name_entry.get()
