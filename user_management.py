@@ -22,6 +22,13 @@ class UserManagement:
         top_button_frame.pack(pady=10)
 
         # Botones para registrar, editar, eliminar y exportar usuarios
+        tk.Button(
+            top_button_frame,
+            text="Registrar usuario",
+            width=15,
+            command=self.open_create_user,
+        ).pack(side=tk.LEFT, padx=5)
+
         self.edit_button = tk.Button(
             top_button_frame,
             text="Editar usuario",
@@ -39,13 +46,6 @@ class UserManagement:
             state=tk.DISABLED,  # Inicialmente deshabilitado
         )
         self.delete_button.pack(side=tk.LEFT, padx=5)
-
-        tk.Button(
-            top_button_frame,
-            text="Registrar usuario",
-            width=15,
-            command=self.open_create_user,
-        ).pack(side=tk.LEFT, padx=5)
 
         tk.Button(
             top_button_frame,
