@@ -75,12 +75,14 @@ class UserManagement:
         self.tree.heading("Apellidos", text="Apellidos")
         self.tree.heading("Teléfono", text="Teléfono")
 
+        # Calcular el ancho máximo de cada columna
+        max_widths = [
+            max(len(str(user[i])) for user in users) * 10 for i in range(len(users[0]))
+        ]
+
         # Ajustar el ancho de las columnas automáticamente al contenido
-        self.tree.column("Id", width=50)  # Anchura de la columna "Id"
-        self.tree.column("Vivienda", width=100)  # Anchura de la columna "Vivienda"
-        self.tree.column("Nombre", width=100)  # Anchura de la columna "Nombre"
-        self.tree.column("Apellidos", width=150)  # Anchura de la columna "Apellidos"
-        self.tree.column("Teléfono", width=200)  # Anchura de la columna "Teléfono"
+        for i, column in enumerate(self.tree["columns"]):
+            self.tree.column(column, width=max_widths[i])
 
         for user in users:
             self.tree.insert("", tk.END, values=user)
