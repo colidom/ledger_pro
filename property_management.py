@@ -73,22 +73,21 @@ class PropertyManagement:
         self.tree.tag_configure("debt", foreground="red")
         self.tree.tag_configure("no_debt", foreground="green")
 
-        if not properties:
-            self.tree.insert("", tk.END, values=("N/A", "N/A", "N/A", "N/A"))
-        else:
-            for property_data in properties:
-                property_data = list(property_data)
-                if property_data[3] == "":
-                    property_data[3] = "0€"
-                    tag = "no_debt"
-                else:
-                    property_data[3] = f"{property_data[3]}€"
-                    tag = "debt"
-                self.tree.insert("", tk.END, values=property_data, tags=(tag,))
+        self.load_properties_into_tree(properties)
 
         self.tree.pack(fill="both", expand=True)
 
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
+
+    def load_properties_into_tree(self, properties):
+        for property_data in properties:
+            property_data = list(property_data)
+            if property_data[2] == "No":
+                tag = "debt"
+            else:
+                tag = "no_debt"
+            property_data[3] = f"{property_data[3]}€" if property_data[3] else "0€"
+            self.tree.insert("", tk.END, values=property_data, tags=(tag,))
 
     def open_create_property(self):
         self.create_property_window()
