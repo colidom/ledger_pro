@@ -96,7 +96,7 @@ class PropertyManagement:
     def create_property_window(self):
         self.property_window = tk.Toplevel()
         self.property_window.title("Registro de Propiedad")
-        self.property_window.geometry("300x200")
+        self.property_window.geometry("300x300")
 
         tk.Label(self.property_window, text="Número de Propiedad:").pack(pady=5)
         self.property_number_entry = tk.Entry(self.property_window)
