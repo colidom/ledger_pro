@@ -134,6 +134,10 @@ class LadgerProDB:
         self.cursor.execute(query, (amount, entity, date, description, income_id))
         self.conn.commit()
 
+    def delete_income(self, income_id):
+        self.cursor.execute("""DELETE FROM incomes WHERE id=?""", (income_id,))
+        self.conn.commit()
+
     def get_all_incomes(self):
         self.cursor.execute("""SELECT * FROM incomes""")
         return self.cursor.fetchall()

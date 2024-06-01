@@ -14,11 +14,9 @@ class IncomeManagement:
         self.income_window.title("Registro de Ingresos")
         self.income_window.geometry("1000x400")
 
-        # Frame para los botones de arriba
         top_button_frame = tk.Frame(self.income_window)
         top_button_frame.pack(pady=10)
 
-        # Botones para registrar, editar, eliminar y exportar ingresos
         tk.Button(
             top_button_frame,
             text="Añadir Ingreso",
@@ -30,7 +28,7 @@ class IncomeManagement:
             top_button_frame,
             text="Editar Ingreso",
             width=20,
-            command=self.edit_income,
+            command=self.edit_and_save_income,
         ).pack(side=tk.LEFT, padx=5)
 
         tk.Button(
@@ -51,7 +49,6 @@ class IncomeManagement:
             ),
         ).pack(side=tk.LEFT, padx=5)
 
-        # Crear el Treeview para mostrar el listado de ingresos
         self.tree = ttk.Treeview(
             self.income_window,
             columns=("Id", "Cantidad", "Entidad", "Fecha", "Descripción"),
@@ -63,14 +60,12 @@ class IncomeManagement:
         self.tree.heading("Fecha", text="Fecha")
         self.tree.heading("Descripción", text="Descripción")
 
-        # Cargar los ingresos en el Treeview
         self.load_incomes_into_tree()
 
         self.tree.pack(fill="both", expand=True)
 
-        # Botón para cerrar la ventana
         tk.Button(
-            self.income_window, text="Cerrar", command=self.income_window.destroy
+            self.income_window, text="Cerrar", command=self.close_income_window
         ).pack()
 
     def open_add_income_window(self):
@@ -130,17 +125,15 @@ class IncomeManagement:
         else:
             messagebox.showerror("Error", "Por favor complete todos los campos.")
 
-    def edit_income(self):
+    def edit_and_save_income(self):
         selected_item = self.tree.selection()
         if selected_item:
-            # Obtener los valores del ingreso seleccionado
             values = self.tree.item(selected_item, "values")
             income_id = values[0]
-            amount = values[1].split()[0]  # Eliminar el símbolo de euro
+            amount = values[1].split()[0]
             entity = values[2]
             date = values[3]
             description = values[4]
-            # Abrir ventana para editar ingreso con los valores seleccionados
             self.open_edit_income_window(income_id, amount, entity, date, description)
         else:
             messagebox.showerror("Error", "Por favor seleccione un ingreso.")
@@ -187,19 +180,16 @@ class IncomeManagement:
         if selected_item:
             confirmation = messagebox.askyesno(
                 "Confirmar Eliminación",
-                "¿Está seguro de que desea eliminar este ingreso?",
+                "¿Está seguro de  eliminar este ingreso?",
             )
-            if confirmation:
-                # Obtener el ID del ingreso seleccionado
-                income_id = self.tree.item(selected_item, "values")[0]
-                # Eliminar el ingreso de la base de datos
-                self.db.delete_income(income_id)
-                # Eliminar el ingreso de la vista
-                self.tree.delete(selected_item)
-                messagebox.showinfo(
-                    "Ingreso Eliminado",
-                    "El ingreso ha sido eliminado correctamente.",
-                )
+        if confirmation:
+            income_id = self.tree.item(selected_item, "values")[0]
+            self.db.delete_income(income_id)
+            self.tree.delete(selected_item)
+            messagebox.showinfo(
+                "Ingreso Eliminado",
+                "El ingreso ha sido eliminado correctamente.",
+            )
         else:
             messagebox.showerror("Error", "Por favor seleccione un ingreso.")
 
@@ -240,12 +230,11 @@ class IncomeManagement:
             self.tree.delete(income)
         for income in incomes:
             income_with_euro = list(income)
-            # Verificar si la fecha ya está en el formato correcto
             if "/" in income[3]:
                 income_date = datetime.strptime(income[3], "%d/%m/%Y")
             else:
                 income_date = datetime.strptime(income[3], "%Y-%m-%d")
-            income_with_euro[3] = income_date.strftime("%d/%m/%Y")  # Formatear la fecha
+            income_with_euro[3] = income_date.strftime("%d/%m/%Y")
             income_with_euro[1] = f"{income[1]} €"
             self.tree.insert("", tk.END, values=income_with_euro)
 
@@ -253,3 +242,6 @@ class IncomeManagement:
         properties = self.db.get_all_properties()
         property_list = [property_data[1] for property_data in properties]
         return property_list
+
+    def close_income_window(self):
+        self.income_window.destroy()
