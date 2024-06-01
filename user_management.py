@@ -57,8 +57,6 @@ class UserManagement:
             ),  # Llama a la función export_to_excel con los datos de usuario y el nombre por defecto "usuarios"
         ).pack(side=tk.LEFT, padx=5)
 
-        self.delete_button.pack(side=tk.LEFT, padx=5)
-
         self.tree = ttk.Treeview(
             user_list_window,
             columns=(
@@ -77,9 +75,19 @@ class UserManagement:
         self.tree.heading("Teléfono", text="Teléfono")
 
         # Calcular el ancho máximo de cada columna
-        max_widths = [
-            max(len(str(user[i])) for user in users) * 10 for i in range(len(users[0]))
-        ]
+        if users:
+            max_widths = [
+                max(len(str(user[i])) for user in users) * 10
+                for i in range(len(users[0]))
+            ]
+        else:
+            max_widths = [
+                0,
+                0,
+                0,
+                0,
+                0,
+            ]  # Define anchos predeterminados si no hay usuarios
 
         # Ajustar el ancho de las columnas automáticamente al contenido
         for i, column in enumerate(self.tree["columns"]):
@@ -98,34 +106,38 @@ class UserManagement:
         self.user_window.geometry("300x300")
 
         tk.Label(self.user_window, text="Vivienda:").pack(pady=5)
-        self.house_number_entry = tk.Entry(self.user_window)
-        self.house_number_entry.pack(pady=5)
 
-        tk.Label(self.user_window, text="Nombre:").pack(pady=5)
-        self.name_entry = tk.Entry(self.user_window)
-        self.name_entry.pack(pady=5)
+        # Aquí agregamos el Combobox para seleccionar la propiedad
+        properties = self.db.get_all_properties()
+        property_options = [property_data[1] for property_data in properties]
+        self.selected_property = tk.StringVar(self.user_window)
 
-        tk.Label(self.user_window, text="Apellidos:").pack(pady=5)
-        self.lastname_entry = tk.Entry(self.user_window)
-        self.lastname_entry.pack(pady=5)
+        # Verificar si hay propiedades
+        if property_options:
+            self.selected_property.set(property_options[0])
+        else:
+            property_options = ["No se han dado de alta propiedades aún"]
+            self.selected_property.set(property_options[0])
 
-        tk.Label(self.user_window, text="Teléfono:").pack(pady=5)
-        self.phone_entry = tk.Entry(self.user_window)
-        self.phone_entry.pack(pady=5)
-
-        tk.Button(
+        ttk.Combobox(
             self.user_window,
-            text="Registrar",
-            command=self.save_user,
-        ).pack(pady=10)
+            textvariable=self.selected_property,
+            values=property_options,
+        ).pack(pady=5)
 
     def save_user(self):
-        house_number = self.house_number_entry.get()
+        house_number = self.selected_property.get()
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
         phone = self.phone_entry.get()
 
         if house_number and name and lastname:
+            # Obtener el ID de la propiedad seleccionada
+            property_id = [
+                property_data[0]
+                for property_data in self.db.get_all_properties()
+                if property_data[1] == house_number
+            ][0]
             self.db.insert_user(house_number, name, lastname, phone)
             # Obtener el ID del usuario recién insertado
             user_id = self.db.cursor.lastrowid
