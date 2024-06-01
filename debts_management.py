@@ -14,6 +14,10 @@ class DebtsManagement:
         debt_list_window.title("Deudas de Vecinos")
         debt_list_window.geometry("800x300")
 
+        # Frame para los botones de arriba
+        top_button_frame = tk.Frame(debt_list_window)
+        top_button_frame.pack(pady=10)
+
         self.tree = ttk.Treeview(
             debt_list_window,
             columns=("Id", "Vivienda", "Vecino", "Deuda Total", "Pagos Pendientes"),
@@ -29,3 +33,14 @@ class DebtsManagement:
             self.tree.insert("", tk.END, values=debt_data)
 
         self.tree.pack(fill="both", expand=True)
+
+        headers = ["Id", "Vivienda", "Vecino", "Deuda Total", "Pagos Pendientes"]
+        # Botón para exportar a Excel
+        tk.Button(
+            top_button_frame,
+            text="Exportar a excel",
+            width=20,
+            command=lambda: export_to_excel(
+                properties_with_debt, "deudas_vecinos", headers
+            ),  # Llama a la función export_to_excel con los datos
+        ).pack(side=tk.LEFT, padx=5)
