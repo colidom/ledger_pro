@@ -47,13 +47,14 @@ class UserManagement:
         )
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
+        headers = ["Id", "Vivienda", "Nombre", "Apellidos", "Teléfono"]
         tk.Button(
             top_button_frame,
             text="Exportar a excel",
             width=15,
             command=lambda: export_to_excel(
-                users
-            ),  # Llama a la función export_to_excel con los datos
+                users, "usuarios", headers
+            ),  # Llama a la función export_to_excel con los datos de usuario y el nombre por defecto "usuarios"
         ).pack(side=tk.LEFT, padx=5)
 
         self.delete_button.pack(side=tk.LEFT, padx=5)

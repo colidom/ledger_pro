@@ -44,12 +44,13 @@ class PropertyManagement:
         )
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
+        headers = ["Id", "Número de Propiedad", "Al Corriente de Pago", "Deuda Actual"]
         tk.Button(
             top_button_frame,
             text="Exportar a excel",
             width=20,
             command=lambda: export_to_excel(
-                properties
+                properties, "propiedades", headers
             ),  # Llama a la función export_to_excel con los datos
         ).pack(side=tk.LEFT, padx=5)
 
