@@ -203,8 +203,12 @@ class ExpenseManagement:
         for expense in self.tree.get_children():
             self.tree.delete(expense)
         for expense in expenses:
+            # Convertir la fecha al formato DD/MM/YYYY
+            formatted_date = datetime.strptime(expense[2], "%Y-%m-%d").strftime(
+                "%d/%m/%Y"
+            )
             self.tree.insert(
                 "",
                 tk.END,
-                values=(expense[0], f"{expense[1]}€", expense[2], expense[3]),
+                values=(expense[0], f"{expense[1]}€", formatted_date, expense[3]),
             )
