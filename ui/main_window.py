@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from classes.NeighborManagement import NeighborManagement
 from classes.PropertyManagement import PropertyManagement
 from classes.DebtsManagement import DebtsManagement
+from classes.ExpenseManagement import ExpenseManagement
 from classes.IncomeManagement import IncomeManagement
 
 
@@ -21,6 +22,9 @@ class MainWindow:
 
         # Inicializar el manejo de deudas
         self.debts_management = DebtsManagement()
+
+        # Inicializar el manejo de deudas
+        self.expense_management = ExpenseManagement()
 
         # Inicializar el manejo de ingresos
         self.income_management = IncomeManagement()
@@ -51,7 +55,10 @@ class MainWindow:
             command=self.income_management.open_incomes_view,
         ).pack(pady=5)
         tk.Button(
-            self.root, text="Registro de Gastos", width=25, command=self.open_expenses
+            self.root,
+            text="Registro de Gastos",
+            width=25,
+            command=self.expense_management.open_expenses_view,
         ).pack(pady=5)
         tk.Button(
             self.root,

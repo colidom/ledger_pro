@@ -48,6 +48,14 @@ class LadgerProDB:
                             FOREIGN KEY(entity) REFERENCES properties(property_number)
                             )"""
         )
+        self.cursor.execute(
+            """CREATE TABLE IF NOT EXISTS expenses (
+                    id INTEGER PRIMARY KEY,
+                    amount REAL,
+                    date TEXT,
+                    description TEXT
+                    )"""
+        )
         self.conn.commit()
 
     def insert_neighbor(
@@ -141,3 +149,36 @@ class LadgerProDB:
     def get_all_incomes(self):
         self.cursor.execute("""SELECT * FROM incomes""")
         return self.cursor.fetchall()
+
+    def insert_expense(self, amount, entity, date, description):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO expenses (amount, entity, date, description)
+            VALUES (?, ?, ?, ?)
+        """,
+            (amount, entity, date, description),
+        )
+        self.conn.commit()
+
+    def get_all_expenses(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM expenses")
+        return cursor.fetchall()
+
+    def update_expense(self, expense_id, amount, entity, date, description):
+        cursor = self.conn.cursor()
+        cursor.execute(
+            """
+            UPDATE expenses
+            SET amount = ?, entity = ?, date = ?, description = ?
+            WHERE id = ?
+        """,
+            (amount, entity, date, description, expense_id),
+        )
+        self.conn.commit()
+
+    def delete_expense(self, expense_id):
+        cursor = self.conn.cursor()
+        cursor.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+        self.conn.commit()
