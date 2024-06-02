@@ -150,35 +150,24 @@ class LadgerProDB:
         self.cursor.execute("""SELECT * FROM incomes""")
         return self.cursor.fetchall()
 
-    def insert_expense(self, amount, entity, date, description):
-        cursor = self.conn.cursor()
-        cursor.execute(
-            """
-            INSERT INTO expenses (amount, entity, date, description)
-            VALUES (?, ?, ?, ?)
-        """,
-            (amount, entity, date, description),
-        )
-        self.conn.commit()
+    def insert_expense(self, amount, date, description):
+        with self.conn:
+            self.conn.execute(
+                "INSERT INTO expenses (amount, date, description) VALUES (?, ?, ?)",
+                (amount, date, description),
+            )
 
     def get_all_expenses(self):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM expenses")
-        return cursor.fetchall()
+        with self.conn:
+            return self.conn.execute("SELECT * FROM expenses").fetchall()
 
-    def update_expense(self, expense_id, amount, entity, date, description):
-        cursor = self.conn.cursor()
-        cursor.execute(
-            """
-            UPDATE expenses
-            SET amount = ?, entity = ?, date = ?, description = ?
-            WHERE id = ?
-        """,
-            (amount, entity, date, description, expense_id),
-        )
-        self.conn.commit()
+    def update_expense(self, expense_id, amount, date, description):
+        with self.conn:
+            self.conn.execute(
+                "UPDATE expenses SET amount = ?, date = ?, description = ? WHERE id = ?",
+                (amount, date, description, expense_id),
+            )
 
     def delete_expense(self, expense_id):
-        cursor = self.conn.cursor()
-        cursor.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
-        self.conn.commit()
+        with self.conn:
+            self.conn.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
